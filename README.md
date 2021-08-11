@@ -1,6 +1,23 @@
 # typingup-pro
+- Typing-up.pro is the web app for practicing touch typing in various languages.
+- The app is made with Vue.js.
 
-> A Vue.js project
+## Online Use
+- Access to the following website: https://www.typing-up.pro/ .
+- Select language and change your keyboard language to the target language.
+- Type the texts as it appears on the screen, including uppercase and lowercase, comma, apostrophe, and characters.
+
+## Desktop Use
+- Clone this repository.
+- Install npm environment to your project directory. It is necessary to run Vue.js app.
+
+### Set your own texts
+- If you want to use your own texts, please put csv file to /static folder.
+- Add the link to /src/components/SideMenu.vue as following.
+
+```html
+<li><a href="/language/spanish" v-bind:class="{'is-active': language === 'Spanish'}">Spanish</a></li>
+```
 
 ## Build Setup
 
