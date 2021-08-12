@@ -16,8 +16,8 @@
 
           <div v-show="!startFlag">
             <p class="is-size-2">Ready?</p>
-            <p class="is-size-5">Change your keyboard language to {{language}}.</p>
-            <button class="button is-danger is-medium is-rounded mt-5" v-on:click="start">Go! - Press Enter Key</button>
+            <p class="is-size-5">Change your keyboard language to {{language}} language.</p>
+              <button class="button is-danger is-medium is-rounded mt-5" v-on:click="start">Go! - Press Enter Key</button><br>
           </div>
 
           <form>
@@ -26,9 +26,39 @@
           </form>
         </div>
 
+        <!-- Use your own texts by uploading a csv file. -->
+        <div class="box" v-show="originalFlag">
+          <button class="delete is-pulled-right" @click="closeCsvWindow"></button>
+          <p class="is-size-2">Use Your Own Texts</p>
+          <p class="is-size-5 mt-5">1. Create a CSV file, that has only one column. </p>
+          <p class="is-size-5"><a href="/static/English.csv">Download Sample File</a></p>
+          <p class="is-size-5 mt-3">2. Upload the CSV file.</p>
+            <div class="file has-name is-boxed is-centered mt-5">
+              <label class="file-label">
+                <input class="file-input" type="file" name="resume" @change="loadCsv">
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="file-label">
+                    Choose a file…
+                  </span>
+                </span>
+              </label>
+            </div>
+            <p>{{ errorMessage }}</p>
+        </div>
 
+        <div class="has-text-right" v-show="!originalFlag">
+          <button class="button is-small is-light is-rounded" @click="closeCsvWindow">
+            <span class="icon">
+              <i class="fas fa-upload"></i>
+            </span>
+            <span>Use Your Own Texts</span></button>
+        </div>
 
       </div>
+
       <div class="column">
         <div class="box">
           <div class="">No: {{ qNumber }} / 15 </div>
@@ -132,22 +162,31 @@ export default {
       totalNg: 0,
       startFlag: false,
       stopFlag: false,
+      originalFlag: false,
       fineRate: 100,
       cpm: 0,
       modal: "",
       languageList: false,
+      errorMessage: '',
     }
   },
   created: function() {
     this.language = this.$route.params.lang;
-    if(!this.language){
-      this.language = "English";
+    if(!this.language && localStorage.questions_all){
+      this.questions_all = this.convertCsvStringToArray(localStorage.questions_all);
+      this.language = "Original";
+      this.originalFlag = true;
+    } else {
+      if(!this.language){
+        this.originalFlag = true;
+        this.language = "English";
+      }
+      this.language = this.language.charAt(0).toUpperCase() + this.language.slice(1);
+      //Load csv file for questions
+      fetch('/static/' + this.language + '.csv')
+      .then(res => res.text())
+      .then(data => (this.questions_all = this.convertCsvStringToArray(data)));
     }
-    this.language = this.language.charAt(0).toUpperCase() + this.language.slice(1);
-    //Load csv file for questions
-    fetch('/static/' + this.language + '.csv')
-    .then(res => res.text())
-    .then(data => (this.questions_all = this.convertCsvStringToArray(data)));
 
   },
   mounted: function() {
@@ -156,6 +195,7 @@ export default {
   methods: {
     //extract randomly 15 words from all words
     convertCsvStringToArray(str) {
+      console.log(str);
       str = str.split("\n").filter(Boolean);
       var arr = [];
       for (let i = 0 ; i < 15 ; i++){
@@ -163,6 +203,33 @@ export default {
         arr.push(str[num]);
       }
       return arr;
+    },
+    //load uploaded original csv file
+    loadCsv(e) {
+      let file = e.target.files[0];
+      let reader = new FileReader();
+
+      if (!file.type.match("text/csv")) {
+        this.errorMessage = "Chose only csv file.";
+        return;
+      }
+
+      this.questions_all = [];
+      reader.readAsText(file);
+      reader.onload = () => {
+        let data = reader.result;
+        localStorage.setItem('questions_all', data);
+        this.questions_all = this.convertCsvStringToArray(data);
+      };
+      location.href="/";
+
+    },
+    closeCsvWindow: function() {
+      if(this.originalFlag){
+        this.originalFlag = false;
+      } else {
+        this.originalFlag = true;
+      }
     },
     newQuestion: function() {
         if(this.qNumber == this.questions_all.length){
@@ -291,7 +358,7 @@ export default {
         } else if(e.key != "Enter") {
           this.mistyped = e.key;
           this.totalNg += 1;
-          this.mistypedKeys.push({ key: e.key})
+          this.mistypedKeys.push({ key: this.wordtoArray[this.charnum]})
         }
 
       }

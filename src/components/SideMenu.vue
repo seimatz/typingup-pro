@@ -1,6 +1,13 @@
 <template>
   <div class="column is-2">
       <aside class="menu is-hidden-mobile">
+        <p class="menu-label">
+            Tools
+        </p>
+        <ul class="menu-list">
+          <li><a href="/" v-bind:class="{'is-active': language === 'Original'}">Your Own Texts</a></li>
+        </ul>
+
           <p class="menu-label">
               Languages
           </p>
