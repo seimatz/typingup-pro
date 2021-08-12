@@ -33,6 +33,7 @@
           <p class="is-size-5 mt-5">1. Create a CSV file, that has only one column. </p>
           <p class="is-size-5"><a href="/static/English.csv">Download Sample File</a></p>
           <p class="is-size-5 mt-3">2. Upload the CSV file.</p>
+          <p class="mt-3">Notice: You can use only texts with simple alphabets like Latin, Cyrillic or Greek. Languages, that have complex input system, like Chinese, Japanese, Korean, are not available.</p>
             <div class="file has-name is-boxed is-centered mt-5">
               <label class="file-label">
                 <input class="file-input" type="file" name="resume" @change="loadCsv">
@@ -68,7 +69,13 @@
 
           <progress class="progress is-success" v-bind:value="sec" max="100">{{ sec }}</progress>
           <div class="buttons">
-            <button class="button is-info is-fullwidth" v-on:click="stop">
+            <button class="button is-info is-fullwidth" v-on:click="stop" v-show="stopFlag">
+              <span class="icon">
+                <i class="fas fa-play"></i>
+              </span>
+              <span>Play</span>
+            </button>
+            <button class="button is-info is-fullwidth" v-on:click="stop" v-show="!stopFlag">
               <span class="icon">
                 <i class="fas fa-pause"></i>
               </span>
@@ -175,10 +182,8 @@ export default {
     if(!this.language && localStorage.questions_all){
       this.questions_all = this.convertCsvStringToArray(localStorage.questions_all);
       this.language = "Original";
-      this.originalFlag = true;
     } else {
       if(!this.language){
-        this.originalFlag = true;
         this.language = "English";
       }
       this.language = this.language.charAt(0).toUpperCase() + this.language.slice(1);
