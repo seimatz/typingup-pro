@@ -11,7 +11,7 @@
           <div v-show="startFlag">
             <div class="question">{{question}}</div>
             <!-- <div class="trans">{{trans}}</div> show translation or explanation. currently not available-->
-            <textarea ref="typedarea" class="textarea typedtxt" wrap="soft" placeholder="type here" autofocus readonly>{{typed}}</textarea>
+            <textarea ref="typedArea" class="textarea typedtxt" wrap="soft" placeholder="type here" autofocus readonly>{{typed}}</textarea>
           </div>
 
           <div v-show="!startFlag">
@@ -62,32 +62,32 @@
 
       <div class="column">
         <div class="box">
-          <div class="">No: {{ qNumber }} / 15 </div>
+          <div class="">No: {{ qNumber + 1 }} / 15 </div>
           <div class="">Rate: {{ fineRate }} %</div>
           <div class="">Total: {{ totalTime/10 }} sec</div>
           <div class="">Rap: 10 sec </div>
 
           <progress class="progress is-success" v-bind:value="sec" max="100">{{ sec }}</progress>
           <div class="buttons">
-            <button class="button is-info is-fullwidth" v-on:click="stop" v-show="stopFlag">
+            <button class="button is-info is-fullwidth" v-bind:disabled="!startFlag" v-on:click="restart" v-show="stopFlag">
               <span class="icon">
                 <i class="fas fa-play"></i>
               </span>
               <span>Play</span>
             </button>
-            <button class="button is-info is-fullwidth" v-on:click="stop" v-show="!stopFlag">
+            <button class="button is-info is-fullwidth" v-bind:disabled="!startFlag" v-on:click="stop" v-show="!stopFlag">
               <span class="icon">
                 <i class="fas fa-pause"></i>
               </span>
               <span>Stop</span>
             </button>
-            <button class="button is-success is-fullwidth" v-on:click="skip">
+            <button class="button is-success is-fullwidth" v-bind:disabled="!startFlag" v-on:click="skip">
               <span class="icon">
                 <i class="fas fa-forward"></i>
               </span>
               <span>Skip</span>
             </button>
-            <button class="button is-warning is-fullwidth" v-on:click="reset">
+            <button class="button is-warning is-fullwidth" v-bind:disabled="!startFlag" v-on:click="reset">
               <span class="icon">
                 <i class="fas fa-redo-alt"></i>
               </span>
@@ -138,6 +138,8 @@
 
 <script>
 import SideMenu from '@/components/SideMenu'
+const encoding = require('encoding-japanese')
+
 export default {
   name: 'game',
   components: {
@@ -200,11 +202,11 @@ export default {
   methods: {
     //extract randomly 15 words from all words
     convertCsvStringToArray(str) {
-      console.log(str);
+      str = str.replace( /[^\u0000-\u1FFF]+/g, ''); //remove kanji or unsupported characters
       str = str.split("\n").filter(Boolean);
       var arr = [];
       for (let i = 0 ; i < 15 ; i++){
-        let num = Math.floor(Math.random() * str.length) + 1;
+        let num = Math.floor(Math.random() * str.length);
         arr.push(str[num]);
       }
       return arr;
@@ -237,14 +239,20 @@ export default {
       }
     },
     newQuestion: function() {
+      console.log(this.charnum + ' ' + this.maxchar);
         if(this.qNumber == this.questions_all.length){
+          this.qNumber -= 1;
+          this.stop();
           this.completeWindow();
         } else {
+        this.$refs.typedArea.focus();
         this.question = this.questions_all[this.qNumber];
+        this.question = this.question.trim();
         this.typed = "";
         this.charnum = 0;
         this.maxchar = this.question.length;
-        this.wordtoArray = this.question.split("");
+        this.wordtoArray = this.question.split('');
+        this.question = this.question.replace(/ /g, '␣');
       }
     },
     modalOff: function() {
@@ -303,11 +311,9 @@ export default {
       window.open('https://twitter.com/share?hashtags=TypingUpPro&url=https%3A%2F%2Ftyping-up.pro&text='+ txt, '_blank');
     },
     skip: function(){
-      if(this.startFlag){
         this.qNumber += 1;
         this.sec = 0;
         this.newQuestion();
-      }
     },
     reset: function(){
       window.location.reload() ;
@@ -327,13 +333,12 @@ export default {
 
     },
     stop: function() { //stop timecount
-      if(this.stopFlag && this.startFlag){
-        this.stopFlag = false;
-        this.run();
-      } else {
-        this.stopFlag = true;
-        window.clearTimeout(this.timerId);
-      }
+      this.stopFlag = true;
+      window.clearTimeout(this.timerId);
+    },
+    restart: function() { //restart
+      this.stopFlag = false;
+      this.run();
     },
     onKeyDown: function(e) {
       //before game start
@@ -346,19 +351,10 @@ export default {
         //if typed character is correct
         if(this.wordtoArray[this.charnum] == e.key){
           this.typed += e.key;
+          this.typed = this.typed.replace(/ /g, '␣');
           this.mistyped = "";
           this.charnum += 1;
           this.okCount +=1;
-
-          //success: last character is typed
-           if(this.charnum == this.maxchar){
-             this.qNumber += 1;
-             this.fineRate = Math.floor(this.okCount/this.totalCharnum *100);
-             this.totalTime += this.sec;
-             this.cpm = Math.floor(this.okCount/(this.totalTime/10/60));
-             this.sec = 0;
-             this.newQuestion();
-           }
            //if key is mistyped
         } else if(e.key != "Enter") {
           this.mistyped = e.key;
@@ -369,6 +365,19 @@ export default {
       }
     }
 
+  },
+  watch: {
+    charnum: function() {
+      //success: last character is typed
+      if(this.charnum >= this.maxchar){
+        this.fineRate = Math.floor(this.okCount/this.totalCharnum *100);
+        this.totalTime += this.sec;
+        this.cpm = Math.floor(this.okCount/(this.totalTime/10/60));
+        this.sec = 0;
+        this.qNumber += 1;
+        this.newQuestion();
+      }
+    }
   }
 }
 </script>
