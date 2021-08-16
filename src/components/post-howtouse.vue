@@ -10,6 +10,6 @@
   <p class="">Notice: You can use only texts with simple alphabets like Latin, Cyrillic or Greek. Languages, that have complex input system, like Chinese, Japanese, Korean, are not available.</p>
   <h2 class="title is-size-4 mt-5">2. Change your keyboard language to the target language.</h2>
   <h2 class="title is-size-4 mt-5">3. Type texts.</h2>
-  <p>Type the texts as it appears on the screen, including uppercase and lowercase, comma, apostrophe, and other characters.</p>
+  <p>Type the texts as it appears on the screen, including uppercase and lowercase, space, comma, apostrophe, and other characters. Space is replaced by "␣", to make it easier to identify.</p>
 </div>
 </template>
