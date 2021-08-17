@@ -16,6 +16,7 @@
   "dependencies": {
     "encoding-japanese": "^1.0.30",
     "vue": "^2.5.2",
+    "vue-gtag": "^1.16.1",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {

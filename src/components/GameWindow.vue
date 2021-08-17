@@ -264,6 +264,12 @@ export default {
 
     },
     start: function() {
+      this.$gtag.event('user_action', {
+        'event_category': 'button',
+        'event_label': 'language',
+        'value': this.language
+      })
+
       this.startFlag = true;
       this.newQuestion();
       this.run();
