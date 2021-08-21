@@ -180,6 +180,8 @@ export default {
   },
   created: function() {
     this.language = this.$route.params.lang;
+
+    //for top page
     if(!this.language && localStorage.questions_all){
       this.questions_all = this.convertCsvStringToArray(localStorage.questions_all);
       this.language = "Original";
@@ -187,13 +189,16 @@ export default {
       if(!this.language){
         this.language = "English";
       }
+      //for /language/xxx  page
       this.language = this.language.charAt(0).toUpperCase() + this.language.slice(1);
       //Load csv file for questions
       fetch('/static/' + this.language + '.csv')
       .then(res => res.text())
-      .then(data => (this.questions_all = this.convertCsvStringToArray(data)));
+      .then(data => (this.questions_all = this.convertCsvStringToArray(data)))
     }
 
+    //change <title></title>
+    document.title = 'Typing-up.pro - ' + this.language;
   },
   mounted: function() {
     document.addEventListener('keydown', this.onKeyDown);
@@ -264,10 +269,10 @@ export default {
 
     },
     start: function() {
-      this.$gtag.event('user_action', {
-        'event_category': 'button',
-        'event_label': 'language',
-        'value': this.language
+      this.$gtag.event('start', {
+        'event_category': this.language,
+        'event_label': '',
+        'value': ''
       })
 
       this.startFlag = true;
