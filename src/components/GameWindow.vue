@@ -28,12 +28,12 @@
 
         <!-- Use your own texts by uploading a csv file. -->
         <div class="box" v-show="originalFlag">
-          <button class="delete is-pulled-right" @click="closeCsvWindow"></button>
+          <button class="delete is-pulled-right" @click="csvWindow"></button>
           <p class="is-size-2">Use Your Own Texts</p>
           <p class="is-size-5 mt-5">1. Create a CSV file, that has only one column. </p>
           <p class="is-size-5"><a href="/static/English.csv">Download Sample File</a></p>
           <p class="is-size-5 mt-3">2. Upload the CSV file.</p>
-          <p class="mt-3">Notice: You can use only texts with simple alphabets like Latin, Cyrillic or Greek. Languages, that have complex input system, like Chinese, Japanese, Korean, are not available.</p>
+          <p class="mt-3">Notice: You can use only texts with simple alphabets like Latin, Cyrillic, Greek and others. Languages, that have complex input system, like Chinese, Japanese, Korean, are not available. Each text should be less than 500 characters.</p>
             <div class="file has-name is-boxed is-centered mt-5">
               <label class="file-label">
                 <input class="file-input" type="file" name="resume" @change="loadCsv">
@@ -51,7 +51,7 @@
         </div>
 
         <div class="has-text-right" v-show="!originalFlag">
-          <button class="button is-small is-light is-rounded" @click="closeCsvWindow">
+          <button class="button is-small is-light is-rounded" @click="csvWindow">
             <span class="icon">
               <i class="fas fa-upload"></i>
             </span>
@@ -180,6 +180,8 @@ export default {
   },
   created: function() {
     this.language = this.$route.params.lang;
+
+    //for top page
     if(!this.language && localStorage.questions_all){
       this.questions_all = this.convertCsvStringToArray(localStorage.questions_all);
       this.language = "Original";
@@ -187,16 +189,19 @@ export default {
       if(!this.language){
         this.language = "English";
       }
+      //for /language/xxx  page
       this.language = this.language.charAt(0).toUpperCase() + this.language.slice(1);
       //Load csv file for questions
       fetch('/static/' + this.language + '.csv')
       .then(res => res.text())
-      .then(data => (this.questions_all = this.convertCsvStringToArray(data)));
+      .then(data => (this.questions_all = this.convertCsvStringToArray(data)))
     }
 
+    //change <title></title>
+    document.title = 'Typing-up.pro - ' + this.language;
   },
   mounted: function() {
-    document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keypress', this.onKeyDown);
   },
   methods: {
     //extract randomly 15 words from all words
@@ -206,7 +211,7 @@ export default {
       var arr = [];
       for (let i = 0 ; i < 15 ; i++){
         let num = Math.floor(Math.random() * str.length);
-        arr.push(str[num]);
+        arr.push(str[num].substr(0, 500)); //characters should be less than 500 each 1 string
       }
       return arr;
     },
@@ -230,7 +235,7 @@ export default {
       location.href="/";
 
     },
-    closeCsvWindow: function() {
+    csvWindow: function() {
       if(this.originalFlag){
         this.originalFlag = false;
       } else {
@@ -264,6 +269,12 @@ export default {
 
     },
     start: function() {
+      this.$gtag.event('start', {
+        'event_category': this.language,
+        'event_label': '',
+        'value': ''
+      })
+
       this.startFlag = true;
       this.newQuestion();
       this.run();

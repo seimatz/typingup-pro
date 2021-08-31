@@ -9,9 +9,27 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
     <!-- Bulma Version 0.9.0-->
     <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
-    <link rel="stylesheet" type="text/css" href="./assets/css/admin.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/1.0.30/encoding.min.js"></script>
+
+    <!-- GDPR cookie consent plugin osano-->
+    <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const cc = window.cookieconsent;
+        cc.initialise({
+          "palette": {
+            "popup": {
+              "background": "#252e39"
+            },
+            "button": {
+              "background": "#14a7d0"
+            }
+          }
+        });
+      })
+    </script>
 
     <meta name="robots">
     <meta name=”description” content="Typing-up.pro is the web app for practicing touch typing in various languages. You can use your own texts by uploading a csv file.">
@@ -21,11 +39,12 @@
     <meta property="og:title" content="Typing-up.pro">
     <meta property="og:description" content="Typing-up.pro is the web app for practicing touch typing in various languages. You can use your own texts by uploading a csv file.">
     <meta property="og:url" content="https://www.typing-up.pro">
-    <meta property="og:image" content="./assets/thumb.png">
+    <meta property="og:image" content="/static/img/thumb.png">
     <meta name="twitter:card" content="summary_large_image">
 
   </head>
   <body>
+
 <!-- START NAV -->
 <nav class="navbar is-white">
     <div class="container">

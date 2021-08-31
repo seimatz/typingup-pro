@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Game from '@/components/GameWindow'
 import Contents from '@/components/ContentsPage'
+import NotFound from '@/components/NotFoundPage'
 
 Vue.use(Router)
 
@@ -14,14 +15,19 @@ export default new Router({
       component: Game
     },
     {
-      path: '/language/:lang',
+      path: '/language/:lang(english|french|german|italian|portuguese|russian|spanish)',
       name: 'game',
       component: Game
     },
     {
-      path: '/contents/:post',
+      path: '/contents/:post(feedback|howtouse)',
       name: 'contents',
       component: Contents
+    },
+    {
+      path: '*',
+      name: 'notFound',
+      component: NotFound
     }
   ]
 })

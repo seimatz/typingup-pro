@@ -5,6 +5,7 @@
   border-bottom: solid 1px #000000;
   margin-bottom: 10px;
   text-align: left;
+  overflow-wrap: break-word;
 }
 
 .trans {
