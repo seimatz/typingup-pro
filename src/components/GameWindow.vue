@@ -318,7 +318,7 @@ export default {
     },
     shareResult: function() {
       var txt = "[Language]" + this.language + " [CPM]" + this.cpm + " [Accuracy Rate]" + this.fineRate;
-      window.open('https://twitter.com/share?hashtags=TypingUpPro&url=https%3A%2F%2Ftyping-up.pro%2Flanguage%2F'+ this.$route.params.lang +'&text='+ txt, '_blank');
+      window.open('https://twitter.com/share?hashtags=TypingUpPro&url=https%3A%2F%2Fwww.typing-up.pro%2Flanguage%2F'+ this.$route.params.lang +'&text='+ txt, '_blank');
     },
     skip: function(){
         this.qNumber += 1;
