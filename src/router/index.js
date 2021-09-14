@@ -15,7 +15,7 @@ export default new Router({
       component: Game
     },
     {
-      path: '/language/:lang(english|french|german|italian|portuguese|russian|spanish)',
+      path: '/language/:lang(english|french|german|italian|portuguese|russian|spanish|bash|git)',
       name: 'game',
       component: Game
     },

@@ -20,6 +20,15 @@
             <li><a href="/language/russian" v-bind:class="{'is-active': language === 'Russian'}">Russian</a></li>
             <li><a href="/language/spanish" v-bind:class="{'is-active': language === 'Spanish'}">Spanish</a></li>
           </ul>
+
+          <p class="menu-label">
+              Programming
+          </p>
+          <ul class="menu-list">
+            <li><a href="/language/bash" v-bind:class="{'is-active': language === 'Bash'}">bash</a></li>
+            <li><a href="/language/git" v-bind:class="{'is-active': language === 'Git'}">git</a></li>
+          </ul>
+
           <p class="menu-label">
               Contents
           </p>

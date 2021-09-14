@@ -11,7 +11,7 @@
           <div v-show="startFlag">
             <div class="question">{{question}}</div>
             <!-- <div class="trans">{{trans}}</div> show translation or explanation. currently not available-->
-            <textarea ref="typedArea" class="textarea typedtxt" wrap="soft" placeholder="type here" autofocus readonly>{{typed}}</textarea>
+            <textarea ref="typedArea" v-model="typed" class="textarea typedtxt" wrap="soft" placeholder="type here" autofocus readonly></textarea>
           </div>
 
           <div v-show="!startFlag">
@@ -110,7 +110,7 @@
           <p class="is-size-5">Accuracy Rate: {{fineRate}} %</p>
           <p class="is-size-5">Keys that you've often mistyped:</p>
                 <ul class="result_ul">
-                <li v-for="(item, index) in ngTotal" class="result_mistype">
+                <li v-for="item in ngTotal" class="result_mistype">
                 {{ item.key }}
               </li>
             </ul>
@@ -318,7 +318,7 @@ export default {
     },
     shareResult: function() {
       var txt = "[Language]" + this.language + " [CPM]" + this.cpm + " [Accuracy Rate]" + this.fineRate;
-      window.open('https://twitter.com/share?hashtags=TypingUpPro&url=https%3A%2F%2Ftyping-up.pro&text='+ txt, '_blank');
+      window.open('https://twitter.com/share?hashtags=TypingUpPro&url=https%3A%2F%2Ftyping-up.pro%2Flanguage%2F'+ this.$route.params.lang +'&text='+ txt, '_blank');
     },
     skip: function(){
         this.qNumber += 1;
